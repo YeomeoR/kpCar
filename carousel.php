@@ -10,7 +10,7 @@
 <body>
     <div class="carousel">
         <!-- double hyphen indicates its a modifier -->
-        <button class="carousel__button carousel__button--left">
+        <button class="carousel__button carousel__button--left is-hidden">
             <!-- <img src="" alt=""> -->-
         </button>
         <div class="carousel__track-container">
