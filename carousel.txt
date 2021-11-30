@@ -1,167 +1,214 @@
-main carousel container
-lr buttonscar button button_button--left and --right
-car_track-container
-carousel_track 
-li carousel_slide
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="carousel.css">
+    <title>HeroCarousel</title>
+</head>
+<body>
+    <div class="carousel">
+        <!-- double hyphen indicates its a modifier -->
+        <button class="carousel__button carousel__button--left is-hidden">
+            <!-- <img src="" alt=""> -->-
+        </button>
+        <div class="carousel__track-container">
+            <ul class="carousel__track">
+                <li class="carousel__slide current-slide">
+                    <img class="carousel__image" src="images/da894a22-f60c-4ab3-ac42-0a615d886358[7595].JPG" alt="">
+                </li>
+                <li class="carousel__slide">
+                    <img class="carousel__image" src="images/21d10acb-4873-45dc-9d6d-f15b207b9559[7587].JPG" alt="">
+                </li>
+                <li class="carousel__slide">
+                    <img class="carousel__image" src="images/IMG_0028[7525] - Copy.JPG" alt="">
+                </li>
+            </ul>
+        </div>
+        <button class="carousel__button carousel__button--right">+</button>
+    <div class="carousel__nav">
+        <button class="carousel__indicator current-slide"></button>
+        <button class="carousel__indicator"></button>
+        <button class="carousel__indicator"></button>
+    </div>
+    </div>
+    <script src="carousel.js"></script>
+</body>
+</html> 
 
-1 btn with class curr_slide
-
-
-.carousel_image {
-w100%
-h100%
-obj-fit:cov
-}
-.carousel_track-container {
-bg: green;
-h100%
-pos:rel
-oh
-}
-.carousel_track{
-p0;
-m0;
-list-style:none
-pos rel
-h100%
-transistion: transform 250ms easein
-}
-
-.carousel_slide {
-pos:abs
-top0
-bot0
-w100%
-}
-
-.carousel_button--left {
-left:-50px;
-cursor:pointer
-}
-
-.carousel_button--right {
-right:-40px;
-}
-
-.carousel_button {
-pos:abs;
-top:50%;
-trans:transY(-50%);
-bg:trans;
-border:0;
-
+.carousel {
+    position: relative;
+    height: 600px;
+    width: 80%;
+    margin: 0 auto;
 }
 
-.carousel_button img {
-w12;
-}
-.carousel_nav {
-bg:pink
-disp:flex
-jc:center
-p10px 0
-m0 12px
+.carousel__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-carousel_indicator {
-border:0
-border_rad: 50%
-w15
-h15
-bg:rgba 0,0,0,0.3
-cursor: pointer
+.carousel__track-container {
+    background-color: lightgreen;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
 }
 
-.carousel_indicator.curr_slide {
-bg:rgba:0,0,0,0.75
+.carousel__track {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    position: relative;
+    height: 100%;
+    transition: transform 250ms ease-in;
 }
 
-***********************
+.carousel__slide {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+}
 
-JS
+.carousel__button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: 1px solid black;
+    cursor: pointer;
+}
 
-var track = select .carousel_track;
-var slides =  Array.from(track.children); check console
-cl(track)
-// click left to move left
-var nextBtn = select .carousel_button-left;
-var prevBtn = select .carousel_button-right;
-var dotsNav = select .carousel_nav;
-var dots = Array.from(dotsNav.children)
+.carousel__button--left {
+    left: -40px;
+}
+
+.carousel__button--right {
+    right: -40px;
+}
+
+.carousel__button img {
+    width: 12px;
+}
+
+.carousel__nav {
+    /* background: pink; */
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+
+}
+
+.carousel__indicator {
+    border: 0;
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    background: rgba(0,0,0,.3);
+    margin: 0 12px;
+    cursor: pointer;
+}
+
+.carousel__indicator.current-slide {
+    background: rgba(0,0,0,.75)
+}
+
+.is-hidden {
+    display: none;
+    /* if at the end of the carousel, dont show buttons */
+}
+
+
+
+
+var track = document.querySelector('.carousel__track');
+var slides = Array.from(track.children);
+var nextButton = document.querySelector('.carousel__button--right');
+var prevButton = document.querySelector('.carousel__button--left');
+var dotsNav = document.querySelector('.carousel__nav');
+var dots = Array.from(dotsNav.children);
+
 
 var slideWidth = slides[0].getBoundingClientRect().width;
-cl(slideWidth)
-// arrange slide next ot each other
-//slides[0].style.left = slideWidth * 0 + 'px';
-//slides[1].style.left = slideWidth * 1 + 'px';
-//slides[2]/style.left = slideWidth * 2 + 'px;
 
-// create for loop to do above
 
-var setSlidePos = (slide, index) => {
-slide.style.left = slideWidth * index + 'px';
+
+var setSlidePosition = (slide, index) => {
+  slide.style.left = slideWidth * index + 'px';
+};
+// loop to do above
+slides.forEach(setSlidePosition);
+
+const moveToSlide = (track, currentSlide, targetSlide) => {
+  track.style.transform = 'translateX(-' + targetSlide.style.left + ')';
+  currentSlide.classList.remove('current-slide');
+  targetSlide.classList.add('current-slide');
 }
-slides.forEach(setSlidePos);
-*********
-OR
-*********
-slides.forEach((slide, index), function() {
-slide.style.left = slideWidth * index + 'px';
+
+var updateDots = (currentDot, targetDot) => {
+    currentDot.classList.remove('current-slide');
+    targetDot.classList.add('current-slide')
+}
+
+var hideShowArrows = (slides, prevButton, nextButton, targetIndex) => {
+     if (targetIndex === 0) {
+       prevButton.classList.add('is-hidden');
+       nextButton.classList.remove('is-hidden');
+     } else if (targetIndex === slides.length - 1) {
+       prevButton.classList.remove('is-hidden');
+       nextButton.classList.add('is-hidden');
+     } else {
+       prevButton.classList.remove('is-hidden');
+       nextButton.classList.remove('is-hidden');
+     }
+}
+
+
+prevButton.addEventListener('click', (e) => {
+    var currentSlide = track.querySelector('.current-slide');
+    var prevSlide = currentSlide.previousElementSibling;
+    var currentDot = dotsNav.querySelector('.current-slide');
+    var prevDot = currentDot.previousElementSibling;
+    var prevIndex = slides.findIndex(slide => slide === prevSlide);
+
+    moveToSlide(track, currentSlide, prevSlide);
+    updateDots(currentDot, prevDot);
+    hideShowArrows(slides, prevButton, nextButton, prevIndex);
+
+
 });
 
-function moveToSlide(track, currentSlide, targetSlide) {
-track.style.transform = 'translateX(-' + targetSlide.style.left + ')'
-currentSlide.classList.remove('current-slide')
-targetSlide.classList.add('current-slide')
-}
+//  click on right button, move slides to the right
+nextButton.addEventListener('click', (e) => {
+    var currentSlide = track.querySelector('.current-slide');
+    var nextSlide = currentSlide.nextElementSibling;
+    var currentDot = dotsNav.querySelector('.current-slide');
+    var nextDot = currentDot.nextElementSibling;
+    var nextIndex = slides.findIndex(slide => slide === nextSlide);
 
-function updateDots(currentDot, targetDot) {
-currentDot.classList.remove('current-slide');
-targetDot.clsasList.add('current-slide');}
+    moveToSlide(track, currentSlide, nextSlide);
+    updateDots(currentDot, nextDot);
+    hideShowArrows(slides, prevButton, nextButton, nextIndex);
 
-// this might be redundant if func move
-// add currentSlide on element in html
-nextButton.click.function(e) { // but jQuery
- var currentSlide = track.select('.curr-slide')
-cl(currSlide.nextElementSibling)
-var prevSlide = currSlide.nextElementSibling;
-// move to the next slide
-var currentDot = dotsNav.qS('.current-slide
-var nextDot = ciurrentDot.nextElementSibling;
+});
 
-moveToSlide(track, currentSlide, nextSlideSlide )
-updateDots(currentDot, nextDot);
-}
-// move to previous slide
+// click on nav dots to move to that slide
+dotsNav.addEventListener('click', (e) => {
+    // which nav dot clicked
+    var targetDot = e.target.closest('button');
 
-prevButton.click.function(e ) {
-var currentSlide = track.select('.current-slide')
-cl(currSlide.nextElementSibling)
-var prevSlide = currSlide.previousElementSibling;
-var currentDot = dotsNav.qS('.curretn-slide
-var prevDot = ciurrentDot.previousEWlementSibling;
+    if (!targetDot) return;
 
-moveToSlide(track, currentSlide, prevSlideSlide )
-updateDots(curretnDot, prevDot);
-moveToslide(track, currentSlide, prevSlide)
+    var currentSlide = track.querySelector('.current-slide');
+    var currentDot = dotsNav.querySelector('.current-slide');
+    var targetIndex = dots.findIndex(dot => dot === targetDot);
+    var targetSlide = slides[targetIndex];
 
-}
-
-
-// dotsnav
-
-dotsNav.click. function(e) {
-var targetDot = e.target.closest('button'); // navDots are buttons
-if(!targetDot) return;
-
-var currentSlide = track.qS('.current-slide');
-var currentDot = dotsNav.qS('.curretn-slide');
-var targetIndex = dots.findIndex(dot, function() {return dot === targetDot})	//like a for loop
-var targetSlide = slides[targetIndex];
-
-moveToSlide(track, currentSlide, targetSlide)
-
-updateDots(curretnDot, targetDot);
-}//)
-
-
+    moveToSlide(track, currentSlide, targetSlide);
+    updateDots(currentDot, targetDot);
+    hideShowArrows(slides, prevButton, nextButton, targetIndex);
+    
+})
